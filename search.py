@@ -81,16 +81,16 @@ def depthFirstSearch(problem):
     startNode = node.Node(problem.getStartState())
     fringe = util.Stack()
     fringe.push(startNode)
-    generated = set()
+    expanded = set()
 
     while not fringe.isEmpty():
         actualNode = fringe.pop()
         if problem.isGoalState(actualNode.state):
             return actualNode.total_path()
-        generated.add(actualNode.state)
+        expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in generated:
+            if state not in expanded:
                 fringe.push(successorNode)
 
 def breadthFirstSearch(problem):
@@ -99,22 +99,35 @@ def breadthFirstSearch(problem):
     startNode = node.Node(problem.getStartState())
     fringe = util.Queue()
     fringe.push(startNode)
-    generated = set()
+    expanded = set()
 
     while not fringe.isEmpty():
         actualNode = fringe.pop()
         if problem.isGoalState(actualNode.state):
             return actualNode.total_path()
-        generated.add(actualNode.state)
+        expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in generated:
+            if state not in expanded:
                 fringe.push(successorNode)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
 
+    startNode = node.Node(problem.getStartState())
+    fringe = util.PriorityQueue()
+    fringe.push(startNode, startNode.cost)
+    expanded = set()
 
+    while not fringe.isEmpty():
+        actualNode = fringe.pop()
+        if problem.isGoalState(actualNode.state):
+            return actualNode.total_path()
+        expanded.add(actualNode.state)
+        for state, action, stepCost in problem.getSuccessors(actualNode.state):
+            successorNode = node.Node(state, actualNode, action, stepCost)
+            if state not in expanded:
+                fringe.update(successorNode, successorNode.cost)
 
 def nullHeuristic(state, problem=None):
     """
