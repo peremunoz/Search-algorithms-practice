@@ -76,28 +76,7 @@ def tinyMazeSearch(problem):
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
     """
-
-    """Tree search"""
-    """
-    startNode = node.Node(problem.getStartState())
-    fringe = util.Stack()
-    fringe.push(startNode)
-
-    while not fringe.isEmpty():
-        actualNode = fringe.pop()
-        if problem.isGoalState(actualNode.state):
-            return actualNode.total_path()
-        for state, action, stepCost in problem.getSuccessors(actualNode.state):
-            successorNode = node.Node(state, actualNode, action, stepCost)
-            fringe.push(successorNode)
-    """
-
-    """Graph search"""
 
     startNode = node.Node(problem.getStartState())
     fringe = util.Stack()
@@ -117,22 +96,6 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
 
-    """Tree search"""
-    """
-    startNode = node.Node(problem.getStartState())
-    fringe = util.Queue()
-    fringe.push(startNode)
-
-    while not fringe.isEmpty():
-        actualNode = fringe.pop()
-        if problem.isGoalState(actualNode.state):
-            return actualNode.total_path()
-        for state, action, stepCost in problem.getSuccessors(actualNode.state):
-            successorNode = node.Node(state, actualNode, action, stepCost)
-            fringe.push(successorNode)
-    """
-    """Graph search"""
-
     startNode = node.Node(problem.getStartState())
     fringe = util.Queue()
     fringe.push(startNode)
@@ -150,7 +113,8 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    
+
+
 
 def nullHeuristic(state, problem=None):
     """
