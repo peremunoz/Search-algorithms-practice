@@ -20,6 +20,7 @@ Pacman agents (in searchAgents.py).
 import util
 import node
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -71,7 +72,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -93,6 +95,7 @@ def depthFirstSearch(problem):
             if state not in expanded and successorNode not in fringe.list:
                 fringe.push(successorNode)
 
+
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
 
@@ -110,6 +113,7 @@ def breadthFirstSearch(problem):
             successorNode = node.Node(state, actualNode, action, stepCost)
             if state not in expanded and successorNode not in fringe.list:
                 fringe.push(successorNode)
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -129,6 +133,7 @@ def uniformCostSearch(problem):
             if state not in expanded and successorNode not in fringe.heap:
                 fringe.update(successorNode, successorNode.total_path())
 
+
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -136,10 +141,24 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    startNode = node.Node(problem.getStartState())
+    fringe = util.PriorityQueue()
+    fringe.push(startNode, heuristic(startNode.state, problem))
+    expanded = set()
+
+    while not fringe.isEmpty():
+        actualNode = fringe.pop()
+        if problem.isGoalState(actualNode.state):
+            return actualNode.total_path()
+        expanded.add(actualNode.state)
+        for state, action, stepCost in problem.getSuccessors(actualNode.state):
+            successorNode = node.Node(state, actualNode, action, stepCost)
+            if state not in expanded and successorNode not in fringe.heap:
+                fringe.update(successorNode, successorNode.total_path() + heuristic(successorNode.state, problem))
 
 
 # Abbreviations
