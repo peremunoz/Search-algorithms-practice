@@ -90,7 +90,7 @@ def depthFirstSearch(problem):
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in expanded:
+            if state not in expanded and successorNode not in fringe.list:
                 fringe.push(successorNode)
 
 def breadthFirstSearch(problem):
@@ -108,7 +108,7 @@ def breadthFirstSearch(problem):
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in expanded:
+            if state not in expanded and successorNode not in fringe.list:
                 fringe.push(successorNode)
 
 def uniformCostSearch(problem):
@@ -116,7 +116,7 @@ def uniformCostSearch(problem):
 
     startNode = node.Node(problem.getStartState())
     fringe = util.PriorityQueue()
-    fringe.push(startNode, startNode.cost)
+    fringe.push(startNode, 0)
     expanded = set()
 
     while not fringe.isEmpty():
@@ -126,8 +126,8 @@ def uniformCostSearch(problem):
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in expanded:
-                fringe.update(successorNode, successorNode.cost)
+            if state not in expanded and successorNode not in fringe.heap:
+                fringe.update(successorNode, successorNode.total_path())
 
 def nullHeuristic(state, problem=None):
     """
