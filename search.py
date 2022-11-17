@@ -136,9 +136,7 @@ def uniformCostSearch(problem):
             successorNode = node.Node(state, actualNode, action, stepCost)
             if problem.isGoalState(successorNode.state):
                 return successorNode.total_path()
-            if successorNode not in fringe.heap and state not in expanded:
-                fringe.push(successorNode, problem.getCostOfActions(successorNode.total_path()))
-            elif successorNode in fringe.heap and problem.getCostOfActions(successorNode.total_path()) < problem.getCostOfActions(fringe.heap[successorNode]):
+            if state not in expanded:
                 fringe.update(successorNode, problem.getCostOfActions(successorNode.total_path()))
 
 
@@ -165,12 +163,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if successorNode not in fringe.heap and state not in expanded:
-                if problem.isGoalState(successorNode.state):
-                    return successorNode.total_path()
-                fringe.push(successorNode, problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state, problem))
-            elif successorNode in fringe.heap and problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state, problem) < problem.getCostOfActions(fringe.heap[successorNode]) + heuristic(fringe.heap[successorNode].state, problem):
-                fringe.update(successorNode, problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state, problem))
+            if problem.isGoalState(successorNode.state):
+                return successorNode.total_path()
+            if state not in expanded:
+                fringe.update(successorNode,
+                              problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state,
+                                                                                               problem))
 
 
 # Abbreviations
