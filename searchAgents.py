@@ -375,21 +375,36 @@ def cornersHeuristic(state, problem):
     admissible (as well as consistent).
     """
     corners = problem.corners  # These are the corner coordinates
-    currentPosition, _ = state
+    currentPosition, _ = state  # The current position
 
     # Calculate the distance between two points
     def distance(point1, point2):
         return util.manhattanDistance(point1, point2)
 
-    # Calculate the distance between the current position and the nearest corner
-    def nearestCornerDistance(position, cornersLeft):
-        return min([distance(position, corner) for corner in cornersLeft])
+    # Calculate the nearest corner
+    def nearestCorner(position, cornersLeft):
+        return min(cornersLeft, key=lambda corner: distance(position, corner))
 
+    # Calculate the distance between all the other corners
+    def allDistanceFromCornerToNearestCorner(position, cornersLeft):
+        if len(cornersLeft) == 1:
+            return 0
+        else:
+            nearestCornerToCorner = nearestCorner(position, cornersLeft)
+            return distance(position, nearestCornerToCorner) + allDistanceFromCornerToNearestCorner(
+                nearestCornerToCorner, cornersLeft[1:])
+
+    # If the current position is a corner, remove it from the list of corners
     cornersWithoutCurrent = list(problem.corners)
     if currentPosition in corners:
         cornersWithoutCurrent.remove(currentPosition)
-    distanceToNearestCorner = nearestCornerDistance(currentPosition, cornersWithoutCurrent)
-    return distanceToNearestCorner
+
+    # Calculate the heuristic
+    nearestCornerFromPosition = nearestCorner(currentPosition, cornersWithoutCurrent)
+    nearestCornerDistance = distance(currentPosition, nearestCornerFromPosition)
+    allCornersDistance = allDistanceFromCornerToNearestCorner(nearestCornerFromPosition, cornersWithoutCurrent)
+
+    return nearestCornerDistance + allCornersDistance
 
 
 class AStarCornersAgent(SearchAgent):
@@ -488,9 +503,36 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    currentPosition, foodGrid = state
+
+    # Distance between two points
+    def distance(point1, point2):
+        return util.manhattanDistance(point1, point2)
+
+    # Calculate the nearest food
+    def nearestFood(position, foodLeft):
+        return min(foodLeft, key=lambda food: distance(position, food))
+
+    # Distance between each food with the nearest food
+    def allDistanceFromFoodToNearestFood(position, foodLeft):
+        if len(foodLeft) == 1:
+            return 0
+        else:
+            nearestFoodToFood = nearestFood(position, foodLeft)
+            return distance(position, nearestFoodToFood) + allDistanceFromFoodToNearestFood(
+                nearestFoodToFood, foodLeft[1:])
+
+    # If the current position is a food, remove it from the list of food
+    foodWithoutCurrent = foodGrid.asList()
+    if currentPosition in foodWithoutCurrent:
+        foodWithoutCurrent.remove(currentPosition)
+
+    # Calculate the heuristic
+    nearestFoodFromPosition = nearestFood(currentPosition, foodWithoutCurrent)
+    nearestFoodDistance = distance(currentPosition, nearestFoodFromPosition)
+    allFoodDistance = allDistanceFromFoodToNearestFood(nearestFoodFromPosition, foodWithoutCurrent)
+
+    return nearestFoodDistance + allFoodDistance
 
 
 class ClosestDotSearchAgent(SearchAgent):
