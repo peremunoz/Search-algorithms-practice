@@ -372,7 +372,8 @@ def cornersHeuristic(state, problem):
     admissible (as well as consistent).
     """
     corners = problem.corners  # These are the corner coordinates
-    currentPosition, _ = state  # The current position
+    currentPosition, visitedCorners = state  # The current position and visited corners
+    unvisitedCorners = [corner for i, corner in enumerate(corners) if not visitedCorners[i]]  # Calculate the unvisited corners
 
     # Calculate the distance between two points
     def distance(point1, point2):
@@ -384,22 +385,20 @@ def cornersHeuristic(state, problem):
 
     # Calculate the distance between all the other corners
     def allDistanceFromCornerToNearestCorner(position, cornersLeft):
-        if len(cornersLeft) == 1:
+        if len(cornersLeft) == 0:
             return 0
         else:
             nearestCornerToCorner = nearestCorner(position, cornersLeft)
             return distance(position, nearestCornerToCorner) + allDistanceFromCornerToNearestCorner(
                 nearestCornerToCorner, cornersLeft[1:])
 
-    # If the current position is a corner, remove it from the list of corners
-    cornersWithoutCurrent = list(problem.corners)
-    if currentPosition in corners:
-        cornersWithoutCurrent.remove(currentPosition)
+    if not unvisitedCorners:
+        return 0
 
     # Calculate the heuristic
-    nearestCornerFromPosition = nearestCorner(currentPosition, cornersWithoutCurrent)
+    nearestCornerFromPosition = nearestCorner(currentPosition, unvisitedCorners)
     nearestCornerDistance = distance(currentPosition, nearestCornerFromPosition)
-    allCornersDistance = allDistanceFromCornerToNearestCorner(nearestCornerFromPosition, cornersWithoutCurrent)
+    allCornersDistance = allDistanceFromCornerToNearestCorner(nearestCornerFromPosition, unvisitedCorners)
 
     return nearestCornerDistance + allCornersDistance
 
@@ -501,6 +500,7 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     currentPosition, foodGrid = state
+    foodList = foodGrid.asList()
 
     # Distance between two points
     def distance(point1, point2):
@@ -512,22 +512,20 @@ def foodHeuristic(state, problem):
 
     # Distance between each food with the nearest food
     def allDistanceFromFoodToNearestFood(position, foodLeft):
-        if len(foodLeft) == 1:
+        if len(foodLeft) == 0:
             return 0
         else:
             nearestFoodToFood = nearestFood(position, foodLeft)
             return distance(position, nearestFoodToFood) + allDistanceFromFoodToNearestFood(
                 nearestFoodToFood, foodLeft[1:])
 
-    # If the current position is a food, remove it from the list of food
-    foodWithoutCurrent = foodGrid.asList()
-    if currentPosition in foodWithoutCurrent:
-        foodWithoutCurrent.remove(currentPosition)
+    if not foodList:
+        return 0
 
     # Calculate the heuristic
-    nearestFoodFromPosition = nearestFood(currentPosition, foodWithoutCurrent)
+    nearestFoodFromPosition = nearestFood(currentPosition, foodList)
     nearestFoodDistance = distance(currentPosition, nearestFoodFromPosition)
-    allFoodDistance = allDistanceFromFoodToNearestFood(nearestFoodFromPosition, foodWithoutCurrent)
+    allFoodDistance = allDistanceFromFoodToNearestFood(nearestFoodFromPosition, foodList)
 
     return nearestFoodDistance + allFoodDistance
 
