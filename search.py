@@ -81,14 +81,14 @@ def depthFirstSearch(problem):
     """
 
     startNode = node.Node(problem.getStartState())
+    if problem.isGoalState(startNode.state):
+        return startNode.total_path()
     fringe = util.Stack()
     fringe.push(startNode)
     expanded = set()
 
     while not fringe.isEmpty():
         actualNode = fringe.pop()
-        if problem.isGoalState(actualNode.state):
-            return actualNode.total_path()
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
@@ -102,14 +102,14 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
 
     startNode = node.Node(problem.getStartState())
+    if problem.isGoalState(startNode.state):
+        return startNode.total_path()
     fringe = util.Queue()
     fringe.push(startNode)
     expanded = set()
 
     while not fringe.isEmpty():
         actualNode = fringe.pop()
-        if problem.isGoalState(actualNode.state):
-            return actualNode.total_path()
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
@@ -134,8 +134,6 @@ def uniformCostSearch(problem):
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if problem.isGoalState(successorNode.state):
-                return successorNode.total_path()
             if state not in expanded:
                 fringe.update(successorNode, problem.getCostOfActions(successorNode.total_path()))
 
@@ -163,8 +161,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         expanded.add(actualNode.state)
         for state, action, stepCost in problem.getSuccessors(actualNode.state):
             successorNode = node.Node(state, actualNode, action, stepCost)
-            if problem.isGoalState(successorNode.state):
-                return successorNode.total_path()
             if state not in expanded:
                 fringe.update(successorNode,
                               problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state,
