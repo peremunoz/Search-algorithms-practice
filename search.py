@@ -131,11 +131,13 @@ def uniformCostSearch(problem):
         actualNode = fringe.pop()
         if problem.isGoalState(actualNode.state):
             return actualNode.total_path()
-        expanded.add(actualNode.state)
-        for state, action, stepCost in problem.getSuccessors(actualNode.state):
-            successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in expanded:
-                fringe.update(successorNode, problem.getCostOfActions(successorNode.total_path()))
+        if actualNode.state not in expanded:
+            expanded.add(actualNode.state)
+            for state, action, stepCost in problem.getSuccessors(actualNode.state):
+                successorNode = node.Node(state, actualNode, action, stepCost)
+                if state not in expanded:
+                    fringe.update(successorNode,
+                                  problem.getCostOfActions(successorNode.total_path()))
 
 
 def nullHeuristic(state, problem=None):
@@ -158,13 +160,13 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         actualNode = fringe.pop()
         if problem.isGoalState(actualNode.state):
             return actualNode.total_path()
-        expanded.add(actualNode.state)
-        for state, action, stepCost in problem.getSuccessors(actualNode.state):
-            successorNode = node.Node(state, actualNode, action, stepCost)
-            if state not in expanded:
-                fringe.update(successorNode,
-                              problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state,
-                                                                                               problem))
+        if actualNode.state not in expanded:
+            expanded.add(actualNode.state)
+            for state, action, stepCost in problem.getSuccessors(actualNode.state):
+                successorNode = node.Node(state, actualNode, action, stepCost)
+                if state not in expanded:
+                    fringe.update(successorNode,
+                                  problem.getCostOfActions(successorNode.total_path()) + heuristic(successorNode.state, problem))
 
 
 # Abbreviations
