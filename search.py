@@ -137,7 +137,7 @@ def uniformCostSearch(problem):
                 successorNode = node.Node(state, actualNode, action, stepCost)
                 if state not in expanded:
                     fringe.update(successorNode,
-                                  problem.getCostOfActions(successorNode.total_path()))
+                                  actualNode.cost + stepCost)
 
 
 def nullHeuristic(state, problem=None):
